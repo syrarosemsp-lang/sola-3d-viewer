@@ -3,43 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Viewer - Sola Sleepy</title>
+    <title>3D Viewer</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        body { margin: 0; padding: 0; font-family: system-ui, sans-serif; background-color: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        .viewer-card { width: 90vw; max-width: 800px; height: 65vh; background: radial-gradient(#2a2a2a, #0a0a0a); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); overflow: hidden; }
-        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
-        .lighting-panel { margin-top: 25px; background: rgba(255, 255, 255, 0.08); padding: 15px 30px; border-radius: 12px; backdrop-filter: blur(10px); display: flex; gap: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .control-group { display: flex; flex-direction: column; gap: 8px; }
-        label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #b3b3b3; }
-        input[type="range"] { width: 150px; cursor: pointer; accent-color: #a8a8a8; }
+        body { margin: 0; background-color: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif; }
+        .box { width: 90vw; max-width: 800px; height: 60vh; background: #222; border-radius: 12px; overflow: hidden; }
+        model-viewer { width: 100%; height: 100%; }
+        .controls { margin-top: 20px; background: #333; padding: 15px; border-radius: 8px; display: flex; gap: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="viewer-card">
-        <model-viewer id="model-env" 
-                      src="solasleepy.glb" 
+    <div class="box">
+        <model-viewer id="viewer" 
+                      src="./solasleepy.glb" 
                       camera-controls 
                       auto-rotate 
-                      shadow-intensity="0.5" 
-                      exposure="0.5" 
-                      shadow-softness="0.5"
-                      alt="Sola Sleepy 3D Model">
+                      exposure="1">
         </model-viewer>
     </div>
 
-    <div class="lighting-panel">
-        <div class="control-group"><label>Lighting / Exposure</label><input type="range" id="exposure" min="0" max="2" step="0.05" value="0.5"></div>
-        <div class="control-group"><label>Shadow Intensity</label><input type="range" id="shadow-intensity" min="0" max="1" step="0.05" value="0.5"></div>
-        <div class="control-group"><label>Shadow Softness</label><input type="range" id="shadow-softness" min="0" max="1" step="0.05" value="0.5"></div>
+    <div class="controls">
+        <label>Brightness: </label>
+        <input type="range" id="light" min="0" max="2" step="0.1" value="1">
     </div>
 
     <script>
-        const viewer = document.querySelector("#model-env");
-        document.querySelector('#exposure').addEventListener('input', (e) => viewer.exposure = e.target.value);
-        document.querySelector('#shadow-intensity').addEventListener('input', (e) => viewer.shadowIntensity = e.target.value);
-        document.querySelector('#shadow-softness').addEventListener('input', (e) => viewer.shadowSoftness = e.target.value);
+        const mv = document.getElementById('viewer');
+        
+        // Change brightness via slider
+        document.getElementById('light').addEventListener('input', (e) => {
+            mv.exposure = e.target.value;
+        });
+
+        // Diagnostic check: If the model fails to load, throw a clear error on screen
+        mv.addEventListener('error', (error) => {
+            console.error("Model failed to load:", error);
+            alert("The code is running, but the browser cannot find or read 'solasleepy.glb'. Make sure the file name matches perfectly and is in the same folder!");
+        });
     </script>
+
 </body>
 </html>
