@@ -51,10 +51,6 @@
                 <label>Brightness</label>
                 <input type="range" id="brightness-slider" min="20" max="200" step="5" value="100">
             </div>
-            <div style="margin-top: 10px;" class="control-group">
-                <label>Shadow Depth</label>
-                <input type="range" id="shadow-slider" min="0" max="2" step="0.1" value="1">
-            </div>
         </div>
     </div>
 
@@ -73,7 +69,6 @@
         });
 
         document.querySelector('#brightness-slider').addEventListener('input', (e) => { viewer.style.filter = `brightness(${e.target.value}%)`; });
-        document.querySelector('#shadow-slider').addEventListener('input', (e) => { viewer.shadowIntensity = e.target.value; });
         document.querySelector('#toggle-rotate').addEventListener('change', (e) => {
             if(e.target.checked) { viewer.setAttribute('auto-rotate', ''); } else { viewer.removeAttribute('auto-rotate'); }
         });
