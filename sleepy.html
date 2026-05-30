@@ -1,126 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Material Inspector - Sleepy</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: system-ui, sans-serif; background-color: #121212; color: #fff; display: flex; min-height: 100vh; overflow: hidden; }
+        
+        /* Full viewport canvas */
+        model-viewer { 
+            flex: 1;
+            height: 100vh; 
+            --poster-color: transparent;
+            filter: brightness(100%); 
+        }
+        
+        /* Professional Control Sidebar */
+        .inspector-panel { 
+            width: 280px;
+            background: rgba(20, 20, 20, 0.85); 
+            padding: 25px; 
+            backdrop-filter: blur(15px); 
+            display: flex; 
+            flex-direction: column;
+            gap: 24px; 
+            box-shadow: -5px 0 30px rgba(0,0,0,0.5); 
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 10; 
+        }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #0b0b0b;
-      overflow: hidden;
-    }
+        .panel-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 10px 0;
+            color: #ff6b81;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
 
-    model-viewer {
-      width: 100vw;
-      height: 100vh;
-    }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        
+        label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #b3b3b3; }
+        
+        input[type="range"] { width: 100%; cursor: pointer; accent-color: #ff6b81; }
+        
+        select { 
+            background: #2a2a2a; 
+            color: #fff; 
+            border: 1px solid #444; 
+            padding: 8px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
 
-    .panel {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.65);
-      padding: 12px;
-      border-radius: 12px;
-      color: white;
-      width: 220px;
-      backdrop-filter: blur(6px);
-    }
-
-    button {
-      width: 100%;
-      margin: 5px 0;
-      padding: 8px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #2a2a2a;
-      color: white;
-    }
-
-    button:hover { background: #3a3a3a; }
-  </style>
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .checkbox-group input { cursor: pointer; }
+    </style>
 </head>
-
 <body>
 
-<model-viewer
-  id="viewer"
-  src="solasleepy.glb"
-  camera-controls
-  auto-rotate
-  exposure="0.8"
-  shadow-intensity="0.5"
-  environment-image="neutral"
-  tone-mapping="aces">
-</model-viewer>
+    <model-viewer id="model-env" 
+                  src="solasleepy.glb" 
+                  camera-controls 
+                  auto-rotate 
+                  rotation-per-second="30deg"
+                  environment-image="legacy"
+                  shadow-intensity="1"
+                  shadow-softness="0.3"
+                  alt="Sola Sleepy 3D Asset">
+    </model-viewer>
 
-<div class="panel">
-  <b>Sleepy</b>
-
-  <button onclick="setLight('studio')">Studio</button>
-  <button onclick="setLight('dramatic')">Dramatic</button>
-  <button onclick="setLight('warm')">Warm</button>
-  <button onclick="setLight('bright')">Bright</button>
-
-  <button onclick="toggleRotate()">Toggle Rotate</button>
-</div>
-
-<script>
-const viewer = document.getElementById('viewer');
-
-function setLight(mode) {
-  if (mode === 'studio') {
-    viewer.environmentImage = 'neutral';
-    viewer.exposure = 0.8;
-    viewer.shadowIntensity = 0.4;
-  }
-
-  if (mode === 'dramatic') {
-    viewer.environmentImage = 'city';
-    viewer.exposure = 0.6;
-    viewer.shadowIntensity = 0.9;
-  }
-
-  if (mode === 'warm') {
-    viewer.environmentImage = 'sunset';
-    viewer.exposure = 0.85;
-    viewer.shadowIntensity = 0.5;
-  }
-
-  if (mode === 'bright') {
-    viewer.environmentImage = 'neutral';
-    viewer.exposure = 1.2;
-    viewer.shadowIntensity = 0.2;
-  }
-}
-
-function toggleRotate() {
-  viewer.autoRotate = !viewer.autoRotate;
-}
-</script>
-
-</body>
-</html>
-    <div class="lighting-panel">
-        <div class="control-group">
-            <label>Brightness</label>
-            <input type="range" id="brightness-slider" min="30" max="200" step="5" value="100">
+    <div class="inspector-panel">
+        <div>
+            <h3 class="panel-title">Asset Inspector</h3>
         </div>
+
+        <div class="control-group" id="variant-container" style="display:none;">
+            <label for="variant-select">Material Variant (Color)</label>
+            <select id="variant-select"><option>Default</option></select>
+        </div>
+
         <div class="control-group">
-            <label>Shadow Intensity</label>
-            <input type="range" id="shadow-slider" min="0" max="2" step="0.1" value="1">
+            <h3 class="panel-title">Motion</h3>
+            <label class="checkbox-group">
+                <input type="checkbox" id="toggle-rotate" checked>
+                Auto-Rotate Model
+            </label>
+            <div style="margin-top: 10px;" class="control-group">
+                <label>Turn Speed</label>
+                <input type="range" id="rotate-speed" min="5" max="120" step="5" value="30">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3 class="panel-title">Lighting & Environment</h3>
+            <div class="control-group">
+                <label>Brightness</label>
+                <input type="range" id="brightness-slider" min="20" max="200" step="5" value="100">
+            </div>
+            <div style="margin-top: 10px;" class="control-group">
+                <label>Shadow Depth</label>
+                <input type="range" id="shadow-slider" min="0" max="2" step="0.1" value="1">
+            </div>
         </div>
     </div>
 
     <script>
         const viewer = document.querySelector("#model-env");
+        const variantSelect = document.querySelector('#variant-select');
+        const variantContainer = document.querySelector('#variant-container');
+
+        // 1. Dynamically read alternative model color variations on load
+        viewer.addEventListener('load', () => {
+            const names = viewer.availableVariants;
+            if (names && names.length > 0) {
+                variantContainer.style.display = 'flex';
+                variantSelect.innerHTML = names.map(name => `<option value="${name}">${name}</option>`).join('');
+                variantSelect.addEventListener('input', (g) => {
+                    viewer.variantName = g.target.value;
+                });
+            }
+        });
+
+        // 2. Multi-Direction Brightness Filter
         document.querySelector('#brightness-slider').addEventListener('input', (e) => {
             viewer.style.filter = `brightness(${e.target.value}%)`;
         });
+
+        // 3. Dynamic Floor Shadow Intensity
         document.querySelector('#shadow-slider').addEventListener('input', (e) => {
             viewer.shadowIntensity = e.target.value;
+        });
+
+        // 4. Motion Controls (Toggle & Speed)
+        document.querySelector('#toggle-rotate').addEventListener('change', (e) => {
+            if(e.target.checked) {
+                viewer.setAttribute('auto-rotate', '');
+            } else {
+                viewer.removeAttribute('auto-rotate');
+            }
+        });
+
+        document.querySelector('#rotate-speed').addEventListener('input', (e) => {
+            viewer.setAttribute('rotation-per-second', `${e.target.value}deg`);
         });
     </script>
 </body>
