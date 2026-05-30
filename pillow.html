@@ -4,45 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sola Pillow Viewer</title>
-    
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #1a1a1a;
-        }
-
-        .viewer-container {
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(#3a3a3a, #111111);
-        }
-
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            --poster-color: transparent;
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #1a1a1a; }
+        .viewer-container { width: 100vw; height: 100vh; background: radial-gradient(#3a3a3a, #111111); }
+        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
     </style>
 </head>
 <body>
 
     <div class="viewer-container">
-        <model-viewer id="pillow-view" 
-                      src="solapillow.glb" 
+        <model-viewer src="solapillow.glb" 
                       camera-controls 
                       auto-rotate 
-                      shadow-intensity="2" 
-                      exposure="0.8" 
-                      shadow-softness="0.3"
-                      environment-image="neutral"
-                      orientation="0deg 30deg 45deg"
-                      alt="Sola Pillow">
+                      shadow-intensity="1.5" 
+                      shadow-softness="0.2"
+                      exposure="1"
+                      environment-image="neutral">
         </model-viewer>
     </div>
 
