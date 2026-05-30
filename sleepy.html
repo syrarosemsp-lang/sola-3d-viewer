@@ -8,7 +8,6 @@
     <style>
         body { margin: 0; padding: 0; font-family: system-ui, sans-serif; background-color: #121212; color: #fff; display: flex; min-height: 100vh; overflow: hidden; }
         
-        /* Full viewport canvas */
         model-viewer { 
             flex: 1;
             height: 100vh; 
@@ -16,7 +15,6 @@
             filter: brightness(100%); 
         }
         
-        /* Professional Control Sidebar */
         .inspector-panel { 
             width: 280px;
             background: rgba(20, 20, 20, 0.85); 
@@ -41,9 +39,7 @@
         }
 
         .control-group { display: flex; flex-direction: column; gap: 8px; }
-        
         label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #b3b3b3; }
-        
         input[type="range"] { width: 100%; cursor: pointer; accent-color: #ff6b81; }
         
         select { 
@@ -63,7 +59,6 @@
             cursor: pointer;
             font-size: 0.85rem;
         }
-        
         .checkbox-group input { cursor: pointer; }
     </style>
 </head>
@@ -108,10 +103,6 @@
                 <label>Brightness</label>
                 <input type="range" id="brightness-slider" min="20" max="200" step="5" value="100">
             </div>
-            <div style="margin-top: 10px;" class="control-group">
-                <label>Shadow Depth</label>
-                <input type="range" id="shadow-slider" min="0" max="2" step="0.1" value="1">
-            </div>
         </div>
     </div>
 
@@ -120,7 +111,6 @@
         const variantSelect = document.querySelector('#variant-select');
         const variantContainer = document.querySelector('#variant-container');
 
-        // 1. Dynamically read alternative model color variations on load
         viewer.addEventListener('load', () => {
             const names = viewer.availableVariants;
             if (names && names.length > 0) {
@@ -132,17 +122,10 @@
             }
         });
 
-        // 2. Multi-Direction Brightness Filter
         document.querySelector('#brightness-slider').addEventListener('input', (e) => {
             viewer.style.filter = `brightness(${e.target.value}%)`;
         });
 
-        // 3. Dynamic Floor Shadow Intensity
-        document.querySelector('#shadow-slider').addEventListener('input', (e) => {
-            viewer.shadowIntensity = e.target.value;
-        });
-
-        // 4. Motion Controls (Toggle & Speed)
         document.querySelector('#toggle-rotate').addEventListener('change', (e) => {
             if(e.target.checked) {
                 viewer.setAttribute('auto-rotate', '');
