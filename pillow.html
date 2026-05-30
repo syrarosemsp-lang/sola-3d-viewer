@@ -17,23 +17,21 @@
 </head>
 <body>
 
-    <h2 style="margin-bottom: 15px; font-weight: 400;">Sola Pillow Showcase</h2>
-
     <div class="viewer-card">
         <model-viewer id="model-env" 
                       src="solapillow.glb" 
                       camera-controls 
                       auto-rotate 
-                      shadow-intensity="1" 
-                      exposure="1" 
+                      shadow-intensity="0.5" 
+                      exposure="0.5" 
                       shadow-softness="0.5"
                       alt="Sola Pillow 3D Model">
         </model-viewer>
     </div>
 
     <div class="lighting-panel">
-        <div class="control-group"><label>Exposure</label><input type="range" id="exposure" min="0" max="2" step="0.05" value="1"></div>
-        <div class="control-group"><label>Shadow Intensity</label><input type="range" id="shadow-intensity" min="0" max="1" step="0.05" value="1"></div>
+        <div class="control-group"><label>Lighting / Exposure</label><input type="range" id="exposure" min="0" max="2" step="0.05" value="0.5"></div>
+        <div class="control-group"><label>Shadow Intensity</label><input type="range" id="shadow-intensity" min="0" max="1" step="0.05" value="0.5"></div>
         <div class="control-group"><label>Shadow Softness</label><input type="range" id="shadow-softness" min="0" max="1" step="0.05" value="0.5"></div>
     </div>
 
