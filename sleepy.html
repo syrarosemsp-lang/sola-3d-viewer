@@ -3,45 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Viewer</title>
+    <title>3D Viewer - Sola Sleepy</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        body { margin: 0; background-color: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif; }
-        .box { width: 90vw; max-width: 800px; height: 60vh; background: #222; border-radius: 12px; overflow: hidden; }
-        model-viewer { width: 100%; height: 100%; }
-        .controls { margin-top: 20px; background: #333; padding: 15px; border-radius: 8px; display: flex; gap: 20px; }
+        body { margin: 0; padding: 0; font-family: system-ui, sans-serif; background-color: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        .viewer-card { width: 90vw; max-width: 800px; height: 65vh; background: radial-gradient(#2a2a2a, #0a0a0a); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); overflow: hidden; }
+        model-viewer { 
+            width: 100%; 
+            height: 100%; 
+            --poster-color: transparent;
+            filter: brightness(100%); 
+        }
+        .lighting-panel { margin-top: 25px; background: rgba(255, 255, 255, 0.08); padding: 15px 30px; border-radius: 12px; backdrop-filter: blur(10px); display: flex; gap: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #b3b3b3; }
+        input[type="range"] { width: 150px; cursor: pointer; accent-color: #a8a8a8; }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <model-viewer id="viewer" 
-                      src="./solasleepy.glb" 
+    <div class="viewer-card">
+        <model-viewer id="model-env" 
+                      src="solasleepy.glb" 
                       camera-controls 
                       auto-rotate 
-                      exposure="1">
+                      environment-image="legacy"
+                      shadow-intensity="1"
+                      shadow-softness="0.3"
+                      alt="Sola Sleepy 3D Model">
         </model-viewer>
     </div>
 
-    <div class="controls">
-        <label>Brightness: </label>
-        <input type="range" id="light" min="0" max="2" step="0.1" value="1">
+    <div class="lighting-panel">
+        <div class="control-group">
+            <label>Brightness</label>
+            <input type="range" id="brightness-slider" min="30" max="200" step="5" value="100">
+        </div>
+        <div class="control-group">
+            <label>Shadow Intensity</label>
+            <input type="range" id="shadow-slider" min="0" max="2" step="0.1" value="1">
+        </div>
     </div>
 
     <script>
-        const mv = document.getElementById('viewer');
-        
-        // Change brightness via slider
-        document.getElementById('light').addEventListener('input', (e) => {
-            mv.exposure = e.target.value;
+        const viewer = document.querySelector("#model-env");
+
+        // Brightness Filter Adjustment
+        document.querySelector('#brightness-slider').addEventListener('input', (e) => {
+            viewer.style.filter = `brightness(${e.target.value}%)`;
         });
 
-        // Diagnostic check: If the model fails to load, throw a clear error on screen
-        mv.addEventListener('error', (error) => {
-            console.error("Model failed to load:", error);
-            alert("The code is running, but the browser cannot find or read 'solasleepy.glb'. Make sure the file name matches perfectly and is in the same folder!");
+        // Live Drop Shadow Intensity Adjustment
+        document.querySelector('#shadow-slider').addEventListener('input', (e) => {
+            viewer.shadowIntensity = e.target.value;
         });
     </script>
-
 </body>
 </html>
