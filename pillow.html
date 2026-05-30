@@ -3,64 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sola Pillow Studio</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    <title>3D Model Viewer</title>
+    
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: system-ui, sans-serif; background-color: #121212; color: #fff; }
-        model-viewer { width: 100%; height: 100%; --poster-color: transparent; background: radial-gradient(circle, #222230 0%, #101015 100%); }
-        .control-panel { position: absolute; top: 20px; right: 20px; width: 230px; background: rgba(20, 20, 25, 0.85); padding: 20px; border-radius: 12px; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.08); z-index: 10; display: flex; flex-direction: column; gap: 16px; }
-        .section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 5px 0; color: #ff6b81; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
-        .group { display: flex; flex-direction: column; gap: 6px; }
-        label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #b3b3b3; display: flex; justify-content: space-between; }
-        input[type="range"] { width: 100%; cursor: pointer; accent-color: #ff6b81; margin-top: 4px; }
-        .checkbox-row { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; user-select: none; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .viewer-container {
+            width: 90vw;
+            max-width: 800px;
+            height: 60vh;
+            background: radial-gradient(#3a3a3a, #111111);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            --poster-color: transparent;
+        }
+
+        .controls {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ccc;
+        }
+
+        input[type="range"] {
+            cursor: pointer;
+            accent-color: #ff6b81;
+        }
     </style>
 </head>
 <body>
 
-    <model-viewer id="pillow-studio" 
-                  src="https://raw.githack.com/syrarosemsp-lang/sola-3d-viewer/main/solapillow.glb" 
-                  camera-controls 
-                  auto-rotate 
-                  shadow-intensity="1.8" 
-                  shadow-softness="0.4" 
-                  exposure="1.0" 
-                  environment-image="neutral" 
-                  camera-orbit="45deg 75deg auto"
-                  rotation-per-second="20deg" 
-                  interaction-prompt="none"
-                  alt="Sola Sleepy 3D Asset">
-    </model-viewer>
+    <h2 style="margin-bottom: 10px;">3D Model Preview</h2>
 
-    <div class="control-panel">
-        <div class="group">
-            <h3 class="section-title">Lighting Setup</h3>
-            <div class="group">
-                <label>Brightness</label>
-                <input id="exposure" type="range" min="0.2" max="2.5" step="0.05" value="1.0">
-            </div>
-            <div class="group">
-                <label>Shadow Angle</label>
-                <input id="light-angle" type="range" min="0" max="360" step="2" value="45">
-            </div>
+    <div class="viewer-container">
+        <model-viewer id="lighting-demo" 
+                      src="solapillow.glb" 
+                      camera-controls 
+                      auto-rotate 
+                      shadow-intensity="1" 
+                      exposure="1" 
+                      shadow-softness="0.5"
+                      orientation="0deg 30deg 45deg"
+                      alt="A 3D model viewer">
+        </model-viewer>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <label for="exposure">Brightness (Exposure)</label>
+            <input type="range" id="exposure" min="0" max="2" step="0.1" value="1">
         </div>
-        <div class="group">
-            <label class="checkbox-row">
-                <input type="checkbox" id="rotate-toggle" checked>
-                Auto-Rotate
-            </label>
+        
+        <div class="control-group">
+            <label for="shadow-intensity">Shadow Intensity</label>
+            <input type="range" id="shadow-intensity" min="0" max="1" step="0.1" value="1">
+        </div>
+        
+        <div class="control-group">
+            <label for="shadow-softness">Shadow Softness</label>
+            <input type="range" id="shadow-softness" min="0" max="1" step="0.1" value="0.5">
         </div>
     </div>
 
     <script>
-        const viewer = document.querySelector("#sleepy-studio");
-        viewer.orientation = "0deg 30deg 45deg";
+        const modelViewer = document.querySelector("#lighting-demo");
 
-        document.querySelector('#exposure').addEventListener('input', (e) => { viewer.exposure = e.target.value; });
-        document.querySelector('#light-angle').addEventListener('input', (e) => { viewer.orientation = `0deg 30deg ${e.target.value}deg`; });
-        document.querySelector('#rotate-toggle').addEventListener('change', (e) => {
-            if(e.target.checked) { viewer.setAttribute('auto-rotate', ''); } else { viewer.removeAttribute('auto-rotate'); }
+        document.querySelector('#exposure').addEventListener('input', (event) => {
+            modelViewer.exposure = event.target.value;
+        });
+
+        document.querySelector('#shadow-intensity').addEventListener('input', (event) => {
+            modelViewer.shadowIntensity = event.target.value;
+        });
+
+        document.querySelector('#shadow-softness').addEventListener('input', (event) => {
+            modelViewer.shadowSoftness = event.target.value;
         });
     </script>
+
 </body>
 </html>
