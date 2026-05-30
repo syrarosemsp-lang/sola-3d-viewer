@@ -1,39 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Viewer - Sola Sleepy</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <style>
-        body { margin: 0; padding: 0; font-family: system-ui, sans-serif; background-color: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
-        
-        /* The 3D viewer now takes up the main view space cleanly without a card border */
-        model-viewer { 
-            width: 100vw; 
-            height: 75vh; 
-            --poster-color: transparent;
-            filter: brightness(100%); 
-        }
-        
-        .lighting-panel { margin-top: 15px; background: rgba(255, 255, 255, 0.08); padding: 15px 30px; border-radius: 12px; backdrop-filter: blur(10px); display: flex; gap: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); border: 1px solid rgba(255, 255, 255, 0.05); z-index: 10; }
-        .control-group { display: flex; flex-direction: column; gap: 8px; }
-        label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #b3b3b3; }
-        input[type="range"] { width: 150px; cursor: pointer; accent-color: #a8a8a8; }
-    </style>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0b0b0b;
+      overflow: hidden;
+    }
+
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .panel {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.65);
+      padding: 12px;
+      border-radius: 12px;
+      color: white;
+      width: 220px;
+      backdrop-filter: blur(6px);
+    }
+
+    button {
+      width: 100%;
+      margin: 5px 0;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #2a2a2a;
+      color: white;
+    }
+
+    button:hover { background: #3a3a3a; }
+  </style>
 </head>
+
 <body>
 
-    <model-viewer id="model-env" 
-                  src="solasleepy.glb" 
-                  camera-controls 
-                  auto-rotate 
-                  environment-image="legacy"
-                  shadow-intensity="1"
-                  shadow-softness="0.3"
-                  alt="Sola Sleepy 3D Model">
-    </model-viewer>
+<model-viewer
+  id="viewer"
+  src="solasleepy.glb"
+  camera-controls
+  auto-rotate
+  exposure="0.8"
+  shadow-intensity="0.5"
+  environment-image="neutral"
+  tone-mapping="aces">
+</model-viewer>
 
+<div class="panel">
+  <b>Sleepy</b>
+
+  <button onclick="setLight('studio')">Studio</button>
+  <button onclick="setLight('dramatic')">Dramatic</button>
+  <button onclick="setLight('warm')">Warm</button>
+  <button onclick="setLight('bright')">Bright</button>
+
+  <button onclick="toggleRotate()">Toggle Rotate</button>
+</div>
+
+<script>
+const viewer = document.getElementById('viewer');
+
+function setLight(mode) {
+  if (mode === 'studio') {
+    viewer.environmentImage = 'neutral';
+    viewer.exposure = 0.8;
+    viewer.shadowIntensity = 0.4;
+  }
+
+  if (mode === 'dramatic') {
+    viewer.environmentImage = 'city';
+    viewer.exposure = 0.6;
+    viewer.shadowIntensity = 0.9;
+  }
+
+  if (mode === 'warm') {
+    viewer.environmentImage = 'sunset';
+    viewer.exposure = 0.85;
+    viewer.shadowIntensity = 0.5;
+  }
+
+  if (mode === 'bright') {
+    viewer.environmentImage = 'neutral';
+    viewer.exposure = 1.2;
+    viewer.shadowIntensity = 0.2;
+  }
+}
+
+function toggleRotate() {
+  viewer.autoRotate = !viewer.autoRotate;
+}
+</script>
+
+</body>
+</html>
     <div class="lighting-panel">
         <div class="control-group">
             <label>Brightness</label>
